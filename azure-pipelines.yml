@@ -7,6 +7,19 @@ variables:
   LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes use_static_cpp=yes no_editor_splash=yes"
 
 jobs:
+  ###### CREATE A RELEASE IN GITHUB
+  - job: "create_github_release"
+    steps:
+    - task: GitHubRelease@0
+      inputs:
+        gitHubConnection: for-azure-scu
+        repositoryName: santouits/test-lto-and-scu
+        tagSource: manual
+        tag: $(Build.BuildNumber)    
+        addChangeLog: false
+    displayName: 'create_github_release'
+
+  ##### JOB 1 ######
   - job: "linux_tools_gnu_releasedebug_lto"
     pool:
       vmImage: "ubuntu-16.04"
@@ -28,14 +41,15 @@ jobs:
         targetFolder: $(Build.ArtifactStagingDirectory)
     - task: GitHubRelease@0
       inputs:
+        action: edit
         gitHubConnection: for-azure-scu
         repositoryName: santouits/test-lto-and-scu
-        tagSource: manual
         tag: $(Build.BuildNumber)    
         assets: $(Build.ArtifactStagingDirectory)/**
         addChangeLog: false
     displayName: 'linux_tools_gnu_releasedebug_lto'
 
+  ##### JOB 2 ######
   - job: "linux_tools_gnu_release_lto"
     pool:
       vmImage: "ubuntu-16.04"
@@ -59,9 +73,9 @@ jobs:
         targetFolder: $(Build.ArtifactStagingDirectory)
     - task: GitHubRelease@0
       inputs:
+        action: edit
         gitHubConnection: for-azure-scu
         repositoryName: santouits/test-lto-and-scu
-        tagSource: manual
         tag: $(Build.BuildNumber)    
         assets: $(Build.ArtifactStagingDirectory)/**
         addChangeLog: false
