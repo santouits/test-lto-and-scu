@@ -14,8 +14,8 @@ jobs:
     - script: |
         cat /etc/*-release
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-        sudo apt -qq update
-        sudo apt -qq install $(LINUX_INSTALL) -y
+        sudo apt-get -qq update
+        sudo apt-get -qq install $(LINUX_INSTALL) -y
         sudo ln -s /usr/bin/gcc-9 gcc
         sudo ln -s /usr/bin/g++-9 g++
         git clone --depth=1 https://github.com/godotengine/godot
@@ -35,3 +35,33 @@ jobs:
         assets: $(Build.ArtifactStagingDirectory)/**
         addChangeLog: false
     displayName: 'linux_tools_gnu_releasedebug_lto'
+
+  - job: "linux_tools_gnu_release_lto"
+    pool:
+      vmImage: "ubuntu-16.04"
+    steps:
+    - script: |
+        cat /etc/*-release
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        sudo apt-get -qq update
+        sudo apt-get -qq install $(LINUX_INSTALL) -y
+        sudo ln -s /usr/bin/gcc-9 gcc
+        sudo ln -s /usr/bin/g++-9 g++
+        git clone --depth=1 https://github.com/godotengine/godot
+        cd godot
+        sed -i 's/O2/O3/g' platform/x11/detect.py
+        scons p=x11 CC=gcc-9 CXX=g++-9 -j5 tools=yes target=release_debug use_lto=yes verbose=yes
+
+    - task: CopyFiles@2
+      inputs:
+        contents: 'godot/bin/*' 
+        targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: GitHubRelease@0
+      inputs:
+        gitHubConnection: for-azure-scu
+        repositoryName: santouits/test-lto-and-scu
+        tagSource: manual
+        tag: $(Build.BuildNumber)    
+        assets: $(Build.ArtifactStagingDirectory)/**
+        addChangeLog: false
+    displayName: 'linux_tools_gnu_release_lto'
