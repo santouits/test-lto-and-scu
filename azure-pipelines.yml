@@ -7,6 +7,26 @@ variables:
   LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes use_static_cpp=yes no_editor_splash=yes verbose=yes"
 
 jobs:
+  ######## build gcc-9 with optimizations for linking statically
+  - job: "build_gcc9"
+    steps:
+    - script: |
+        sudo apt-get -qq update
+        sudo apt-get -qq install build-essential -y
+        sudo apt-get -qq build-dep gcc-5 -y
+        wget https://ftpmirror.gnu.org/gcc/gcc-9.2.0/gcc-9.2.0.tar.gz
+        tar xf gcc-9.2.0.tar.gz
+        gcc-9.2.0/contrib/download_prerequisites
+        mkdir build
+        cd build
+        ../gcc-9.2.0/configure -v --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix=/usr/local/gcc-9.2 --enable-checking=no --enable-languages=c,c++ --disable-multilib --program-suffix=-9.2
+        make BUILD_CONFIG='bootstrap-O3 bootstrap-lto' -j5 profiledbootstrap
+        sudo make install-strip
+        export PATH="/usr/local/gcc-9.2/bin:$PATH"
+        export LD_LIBRARY_PATH="/usr/local/gcc-9.1/lib64:$LD_LIBRARY_PATH"
+        gcc-9 --version
+        g++-9 --version
+
   ###### CREATE A RELEASE IN GITHUB
   - job: "create_github_release"
     steps:
