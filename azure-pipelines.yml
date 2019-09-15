@@ -11,10 +11,10 @@ jobs:
   - job: "build_gcc9"
     steps:
     - script: |
-        sudo apt-get -qq update
-        sudo apt-get -qq install build-essential -y
+        sudo apt-get update
+        sudo apt-get install build-essential -y
         sudo apt-get build-dep gcc-5 -y
-        wget https://ftpmirror.gnu.org/gcc/gcc-9.2.0/gcc-9.2.0.tar.gz
+        wget -q https://ftpmirror.gnu.org/gcc/gcc-9.2.0/gcc-9.2.0.tar.gz
         tar xf gcc-9.2.0.tar.gz
         cd gcc-9.2.0
         contrib/download_prerequisites
