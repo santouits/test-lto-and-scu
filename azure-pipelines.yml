@@ -4,7 +4,7 @@ trigger:
 
 variables: 
   LINUX_INSTALL: "g++-9 git scons libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
-  LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes use_static_cpp=yes no_editor_splash=yes"
+  LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes use_static_cpp=yes no_editor_splash=yes verbose=yes"
 
 jobs:
   ###### CREATE A RELEASE IN GITHUB
@@ -33,7 +33,7 @@ jobs:
         sudo ln -s /usr/bin/g++-9 g++
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
-        scons p=x11 CC=gcc-9 CXX=g++-9 -j5 tools=yes target=release_debug use_lto=yes verbose=yes
+        scons p=x11 CC=gcc-9 CXX=g++-9 -j5 tools=yes target=release_debug use_lto=yes $(LINUX_OPTIONS)
 
     - task: CopyFiles@2
       inputs:
@@ -66,7 +66,7 @@ jobs:
         cd godot
         sed -i 's/O2/O3/g' platform/x11/detect.py
         sed -i 's/.opt.tools/.opt.tools.O3/g' SConstruct
-        scons p=x11 CC=gcc-9 CXX=g++-9 -j5 tools=yes target=release_debug use_lto=yes verbose=yes
+        scons p=x11 CC=gcc-9 CXX=g++-9 -j5 tools=yes target=release_debug use_lto=yes $(LINUX_OPTIONS)
 
     - task: CopyFiles@2
       inputs:
