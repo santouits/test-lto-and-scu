@@ -3,7 +3,7 @@ trigger:
 - master
 
 variables: 
-  LINUX_INSTALL: "gcc-9 git scons libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
+  LINUX_INSTALL: "g++-9 git scons libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
   LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes use_static_cpp=yes no_editor_splash=yes"
 
 jobs:
