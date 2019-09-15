@@ -2,6 +2,10 @@
 trigger:
 - master
 
+variables: 
+  LINUX_INSTALL: "gcc-9 git scons libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
+  LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes use_static_cpp=yes no_editor_splash=yes"
+
 jobs:
   - job: "linux_tools_gnu_releasedebug_lto"
     pool:
@@ -9,11 +13,14 @@ jobs:
     steps:
     - script: |
         cat /etc/*-release
-        sudo apt update
-        sudo apt install git scons libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev -y
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        sudo apt -qq update
+        sudo apt -qq install $(LINUX_INSTALL) -y
+        sudo ln -s /usr/bin/gcc-9 gcc
+        sudo ln -s /usr/bin/g++-9 g++
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
-        scons p=x11 -j5 tools=yes target=release_debug use_lto=yes
+        scons p=x11 CC=gcc-9 CXX=g++-9 -j5 tools=yes target=release_debug use_lto=yes verbose=yes
 
     - task: CopyFiles@2
       inputs:
@@ -27,4 +34,4 @@ jobs:
         tag: $(Build.BuildNumber)    
         assets: $(Build.ArtifactStagingDirectory)/**
         addChangeLog: false
-    displayName: 'test-re'
+    displayName: 'linux_tools_gnu_releasedebug_lto'
