@@ -1,15 +1,11 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 
 trigger:
 - master
 
 jobs:
-- job: "linux_tools_gnu_releasedebug_lto"
-  pool:
-    vmImage: "ubuntu-16.04"
+  - job: "linux_tools_gnu_releasedebug_lto"
+    pool:
+      vmImage: "ubuntu-16.04"
     steps:
     - script: |
         cat /etc/*-release
@@ -18,17 +14,17 @@ jobs:
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
         scons p=x11 -j5 tools=yes target=release_debug use_lto=yes
-    - task: 
-      - CopyFiles@2:
-          inputs:
-            contents: 'godot/bin/*' 
-            targetFolder: $(Build.ArtifactStagingDirectory)
-        GitHubRelease@0:
-          inputs:
-            gitHubConnection: for-azure-scu
-            repositoryName: santouits/test-lto-and-scu
-            tagSource: manual
-            tag: $(Build.BuildNumber)    
-            assets: $(Build.ArtifactStagingDirectory)/**
-            addChangeLog: false
+
+    - task: CopyFiles@2
+      inputs:
+        contents: 'godot/bin/*' 
+        targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: GitHubRelease@0
+      inputs:
+        gitHubConnection: for-azure-scu
+        repositoryName: santouits/test-lto-and-scu
+        tagSource: manual
+        tag: $(Build.BuildNumber)    
+        assets: $(Build.ArtifactStagingDirectory)/**
+        addChangeLog: false
     displayName: 'test-re'
