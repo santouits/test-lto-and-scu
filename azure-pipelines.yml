@@ -12,14 +12,14 @@ jobs:
     steps:
     - script: |
         sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
-        sudo apt-get update
-        sudo apt-get install build-essential -y
-        sudo apt-get build-dep gcc-5 -y
+        sudo apt-get -qq update
+        sudo apt-get -qq install build-essential -y
+        sudo apt-get -qq build-dep gcc-5 -y
         wget -q https://ftpmirror.gnu.org/gcc/gcc-9.2.0/gcc-9.2.0.tar.gz
         tar xf gcc-9.2.0.tar.gz
         cd gcc-9.2.0
         contrib/download_prerequisites
-        configure -v --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix=/usr/local/gcc-9.2 --enable-checking=no --enable-languages=c,c++ --disable-multilib --program-suffix=-9.2
+        ./configure -v --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix=/usr/local/gcc-9.2 --enable-checking=no --enable-languages=c,c++ --disable-multilib --program-suffix=-9.2
         make BUILD_CONFIG='bootstrap-O3 bootstrap-lto' -j5 profiledbootstrap
         sudo make install-strip
         export PATH="/usr/local/gcc-9.2/bin:$PATH"
