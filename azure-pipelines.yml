@@ -31,4 +31,4 @@ jobs:
             tag: $(Build.BuildNumber)    
             assets: $(Build.ArtifactStagingDirectory)/**
             addChangeLog: false
-  displayName: 'test-re'
+    displayName: 'test-re'
