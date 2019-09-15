@@ -7,7 +7,7 @@ trigger:
 - master
 
 jobs:
-- job: "linux-tools-gnu-release_debug-lto"
+- job: "linux_tools_gnu_releasedebug_lto"
   pool:
     vmImage: "ubuntu-16.04"
     steps:
@@ -21,8 +21,8 @@ jobs:
     - task: 
       - CopyFiles@2:
           inputs:
-              contents: 'godot/bin/*' 
-              targetFolder: $(Build.ArtifactStagingDirectory)
+            contents: 'godot/bin/*' 
+            targetFolder: $(Build.ArtifactStagingDirectory)
         GitHubRelease@0:
           inputs:
             gitHubConnection: for-azure-scu
