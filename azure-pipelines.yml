@@ -50,6 +50,7 @@ jobs:
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
         sed -i 's/O2/O3/g' platform/x11/detect.py
+        sed -i 's/.opt.tools/.opt.tools.O3/g' SConstruct
         scons p=x11 CC=gcc-9 CXX=g++-9 -j5 tools=yes target=release_debug use_lto=yes verbose=yes
 
     - task: CopyFiles@2
