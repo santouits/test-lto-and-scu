@@ -9,6 +9,8 @@ variables:
 jobs:
   ######## build gcc-9 with optimizations for linking statically
   - job: "build_gcc9"
+    timeoutInMinutes: 3600
+    cancelTimeoutInMinutes: 3600
     steps:
     - script: |
         sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
