@@ -6,38 +6,29 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    cat /etc/*-release
-    sudo apt update
-    sudo apt install git scons libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev -y
-    git clone --depth=1 https://github.com/godotengine/godot
-    cd godot
-    scons p=x11 -j5 tools=yes target=release_debug use_lto=yes
-
-  displayName: 'Run a multi-line script'
-
-# Copy files
-# Copy files from a source folder to a target folder using patterns matching file paths (not folder paths)
-- task: CopyFiles@2
-  inputs:
-    contents: 'godot/bin/*' 
-    targetFolder: $(Build.ArtifactStagingDirectory)
-
-
-# GitHub Release
-# Create, edit, or delete a GitHub release
-- task: GitHubRelease@0
-  inputs:
-    gitHubConnection: for-azure-scu
-    repositoryName: santouits/test-lto-and-scu
-    tagSource: manual
-    tag: $(Build.BuildNumber)    
-    assets: $(Build.ArtifactStagingDirectory)/**
-    addChangeLog: false
+jobs:
+- job: "linux-tools-gnu-release_debug-lto"
+  pool:
+    vmImage: "ubuntu-16.04"
+    steps:
+    - script: |
+        cat /etc/*-release
+        sudo apt update
+        sudo apt install git scons libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev -y
+        git clone --depth=1 https://github.com/godotengine/godot
+        cd godot
+        scons p=x11 -j5 tools=yes target=release_debug use_lto=yes
+    - task: 
+      - CopyFiles@2:
+          inputs:
+              contents: 'godot/bin/*' 
+              targetFolder: $(Build.ArtifactStagingDirectory)
+        GitHubRelease@0:
+          inputs:
+            gitHubConnection: for-azure-scu
+            repositoryName: santouits/test-lto-and-scu
+            tagSource: manual
+            tag: $(Build.BuildNumber)    
+            assets: $(Build.ArtifactStagingDirectory)/**
+            addChangeLog: false
+  displayName: 'test-re'
