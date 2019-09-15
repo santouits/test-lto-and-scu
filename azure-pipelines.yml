@@ -11,6 +11,7 @@ jobs:
   - job: "build_gcc9"
     steps:
     - script: |
+        sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
         sudo apt-get update
         sudo apt-get install build-essential -y
         sudo apt-get build-dep gcc-5 -y
