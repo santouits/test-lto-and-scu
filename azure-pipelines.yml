@@ -46,6 +46,7 @@ jobs:
         repositoryName: santouits/test-lto-and-scu
         tag: $(Build.BuildNumber)    
         assets: $(Build.ArtifactStagingDirectory)/**
+        assetUploadMode: replace
         addChangeLog: false
     displayName: 'linux_tools_gnu_releasedebug_lto'
 
@@ -78,5 +79,6 @@ jobs:
         repositoryName: santouits/test-lto-and-scu
         tag: $(Build.BuildNumber)    
         assets: $(Build.ArtifactStagingDirectory)/**
+        assetUploadMode: replace
         addChangeLog: false
     displayName: 'linux_tools_gnu_release_lto'
