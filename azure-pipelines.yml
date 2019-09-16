@@ -3,7 +3,7 @@ trigger:
 - master
 
 variables: 
-  LINUX_INSTALL: "g++-9 git scons libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
+  LINUX_INSTALL: "g++-9 git python-pip libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
   LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes use_static_cpp=yes no_editor_splash=yes verbose=yes"
 
 jobs:
@@ -35,6 +35,8 @@ jobs:
         sudo ln -s /usr/bin/g++-9 g++
         sudo ln -s /usr/bin/gcc-ar gcc-ar-9
         sudo ln -s /usr/bin/gcc-ranlib gcc-ranlib-9
+        sudo ln -s /usr/bin/gcc-nm gcc-nm-9
+        sudo pip install scons
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
         scons p=x11 -j5 tools=yes target=release_debug use_lto=yes debug_symbols=no CCFLAGS='-fno-fat-lto-objects' $(LINUX_OPTIONS)
@@ -68,6 +70,8 @@ jobs:
         sudo ln -s /usr/bin/g++-9 g++
         sudo ln -s /usr/bin/gcc-ar gcc-ar-9
         sudo ln -s /usr/bin/gcc-ranlib gcc-ranlib-9
+        sudo ln -s /usr/bin/gcc-nm gcc-nm-9
+        sudo pip install scons
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
         sed -i 's/O2/O3/g' platform/x11/detect.py
