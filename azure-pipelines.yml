@@ -7,28 +7,6 @@ variables:
   LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes use_static_cpp=yes no_editor_splash=yes verbose=yes"
 
 jobs:
-  ######## build gcc-9 with optimizations for linking statically
-  - job: "build_gcc9"
-    timeoutInMinutes: 3600
-    cancelTimeoutInMinutes: 3600
-    steps:
-    - script: |
-        sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
-        sudo apt-get -qq update
-        sudo apt-get -qq install build-essential -y
-        sudo apt-get -qq build-dep gcc-5 -y
-        wget -q https://ftpmirror.gnu.org/gcc/gcc-9.2.0/gcc-9.2.0.tar.gz
-        tar xf gcc-9.2.0.tar.gz
-        cd gcc-9.2.0
-        contrib/download_prerequisites
-        ./configure -v --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix=/usr/local/gcc-9.2 --enable-checking=no --enable-languages=c,c++ --disable-multilib --program-suffix=-9.2
-        make BUILD_CONFIG='bootstrap-O3 bootstrap-lto' -j5 profiledbootstrap
-        sudo make install-strip
-        export PATH="/usr/local/gcc-9.2/bin:$PATH"
-        export LD_LIBRARY_PATH="/usr/local/gcc-9.1/lib64:$LD_LIBRARY_PATH"
-        gcc-9 --version
-        g++-9 --version
-
   ###### CREATE A RELEASE IN GITHUB
   - job: "create_github_release"
     pool:
@@ -55,9 +33,11 @@ jobs:
         sudo apt-get -qq install $(LINUX_INSTALL) -y
         sudo ln -s /usr/bin/gcc-9 gcc
         sudo ln -s /usr/bin/g++-9 g++
+        sudo ln -s /usr/bin/gcc-ar gcc-ar-9
+        sudo ln -s /usr/bin/gcc-ranlib gcc-ranlib-9
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
-        scons p=x11 CC=gcc-9 CXX=g++-9 -j5 tools=yes target=release_debug use_lto=yes $(LINUX_OPTIONS)
+        scons p=x11 -j5 tools=yes target=release_debug use_lto=yes CCFLAGS='-fno-fat-lto-objects' $(LINUX_OPTIONS)
 
     - task: CopyFiles@2
       inputs:
@@ -86,11 +66,13 @@ jobs:
         sudo apt-get -qq install $(LINUX_INSTALL) -y
         sudo ln -s /usr/bin/gcc-9 gcc
         sudo ln -s /usr/bin/g++-9 g++
+        sudo ln -s /usr/bin/gcc-ar gcc-ar-9
+        sudo ln -s /usr/bin/gcc-ranlib gcc-ranlib-9
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
         sed -i 's/O2/O3/g' platform/x11/detect.py
         sed -i 's/.opt.tools/.opt.tools.O3/g' SConstruct
-        scons p=x11 CC=gcc-9 CXX=g++-9 -j5 tools=yes target=release_debug use_lto=yes $(LINUX_OPTIONS)
+        scons p=x11 -j5 tools=yes target=release_debug use_lto=yes CCFLAGS='-fno-fat-lto-objects' $(LINUX_OPTIONS)
 
     - task: CopyFiles@2
       inputs:
