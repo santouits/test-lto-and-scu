@@ -37,7 +37,7 @@ jobs:
         sudo ln -s /usr/bin/gcc-ranlib gcc-ranlib-9
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
-        scons p=x11 -j5 tools=yes target=release_debug use_lto=yes CCFLAGS='-fno-fat-lto-objects' $(LINUX_OPTIONS)
+        scons p=x11 -j5 tools=yes target=release_debug use_lto=yes debug_symbols=no CCFLAGS='-fno-fat-lto-objects' $(LINUX_OPTIONS)
 
     - task: CopyFiles@2
       inputs:
@@ -72,7 +72,7 @@ jobs:
         cd godot
         sed -i 's/O2/O3/g' platform/x11/detect.py
         sed -i 's/.opt.tools/.opt.tools.O3/g' SConstruct
-        scons p=x11 -j5 tools=yes target=release_debug use_lto=yes CCFLAGS='-fno-fat-lto-objects' $(LINUX_OPTIONS)
+        scons p=x11 -j5 tools=yes target=release_debug use_lto=yes debug_symbols=no CCFLAGS='-fno-fat-lto-objects' $(LINUX_OPTIONS)
 
     - task: CopyFiles@2
       inputs:
