@@ -8,7 +8,7 @@ variables:
   LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes use_static_cpp=yes no_editor_splash=yes verbose=yes"
 
 jobs:
-  ###### CREATE A RELEASE IN GITHUB
+  ###### CREATE A RELEASE IN GITHUB TO UPLOAD THE ARTIFACTS
   - job: "create_github_release"
     pool:
       vmImage: "ubuntu-16.04"
