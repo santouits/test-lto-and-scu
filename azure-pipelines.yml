@@ -32,12 +32,17 @@ jobs:
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
         sudo apt-get -qq update
         sudo apt-get -qq install $(LINUX_INSTALL) -y
-        sudo ln -s /usr/bin/gcc-9 gcc
-        sudo ln -s /usr/bin/g++-9 g++
-        sudo ln -s /usr/bin/gcc-ar gcc-ar-9
-        sudo ln -s /usr/bin/gcc-ranlib gcc-ranlib-9
-        sudo ln -s /usr/bin/gcc-nm gcc-nm-9
         sudo pip install scons
+
+        sudo ln -sf /usr/bin/gcc-9 /usr/bin/gcc
+        sudo ln -sf /usr/bin/g++-9 /usr/bin/g++
+        sudo ln -sf /usr/bin/gcc-ar-9 /usr/bin/gcc-ar
+        sudo ln -sf /usr/bin/gcc-nm-9 /usr/bin/gcc-nm
+        sudo ln -sf /usr/bin/gcc-ranlib-9 /usr/bin/gcc-ranlib
+        sudo ln -sf /usr/bin/gcc-ar-9 /usr/bin/ar
+        sudo ln -sf /usr/bin/gcc-nm-9 /usr/bin/nm
+        sudo ln -sf /usr/bin/gcc-ranlib-9 /usr/bin/ranlib
+
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
         scons p=x11 -j5 tools=yes target=release_debug use_lto=yes debug_symbols=no CCFLAGS='-fno-fat-lto-objects -march=btver1 -mtune=btver1 $(MY_INSTRUCTIONS)' $(LINUX_OPTIONS)
@@ -67,12 +72,17 @@ jobs:
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
         sudo apt-get -qq update
         sudo apt-get -qq install $(LINUX_INSTALL) -y
-        sudo ln -s /usr/bin/gcc-9 gcc
-        sudo ln -s /usr/bin/g++-9 g++
-        sudo ln -s /usr/bin/gcc-ar gcc-ar-9
-        sudo ln -s /usr/bin/gcc-ranlib gcc-ranlib-9
-        sudo ln -s /usr/bin/gcc-nm gcc-nm-9
         sudo pip install scons
+
+        sudo ln -sf /usr/bin/gcc-9 /usr/bin/gcc
+        sudo ln -sf /usr/bin/g++-9 /usr/bin/g++
+        sudo ln -sf /usr/bin/gcc-ar-9 /usr/bin/gcc-ar
+        sudo ln -sf /usr/bin/gcc-nm-9 /usr/bin/gcc-nm
+        sudo ln -sf /usr/bin/gcc-ranlib-9 /usr/bin/gcc-ranlib
+        sudo ln -sf /usr/bin/gcc-ar-9 /usr/bin/ar
+        sudo ln -sf /usr/bin/gcc-nm-9 /usr/bin/nm
+        sudo ln -sf /usr/bin/gcc-ranlib-9 /usr/bin/ranlib
+
         git clone --depth=1 https://github.com/godotengine/godot
         cd godot
         sed -i 's/O2/O3/g' platform/x11/detect.py
