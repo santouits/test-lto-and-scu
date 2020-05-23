@@ -1,31 +1,15 @@
-
 trigger:
 - master
 
 variables: 
-  MY_INSTRUCTIONS: "-mmmx -mno-3dnow -msse -msse2 -msse3 -mssse3 -msse4a -mcx16 -msahf -mno-movbe -mno-aes -mno-sha -mno-pclmul -mpopcnt -mabm -mno-lwp -mno-fma -mno-fma4 -mno-xop -mno-bmi -mno-bmi2 -mno-tbm -mno-avx -mno-avx2 -mno-sse4.2 -mno-sse4.1 -mlzcnt -mno-rtm -mno-hle -mno-rdrnd -mno-f16c -mno-fsgsbase -mno-rdseed -mprfchw -mno-adx -mfxsr -mno-xsave -mno-xsaveopt -mno-avx512f -mno-avx512er -mno-avx512cd -mno-avx512pf -mno-prefetchwt1 -mno-clflushopt -mno-xsavec -mno-xsaves -mno-avx512dq -mno-avx512bw -mno-avx512vl -mno-avx512ifma -mno-avx512vbmi -mno-clwb -mno-mwaitx"
   LINUX_INSTALL: "g++-9 git python-pip libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
   LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes no_editor_splash=yes verbose=yes"
 
 jobs:
-  ###### CREATE A RELEASE IN GITHUB TO UPLOAD THE ARTIFACTS
-  - job: "create_github_release"
-    pool:
-      vmImage: "ubuntu-16.04"
-    steps:
-    - task: GitHubRelease@0
-      inputs:
-        gitHubConnection: for-azure-scu
-        repositoryName: santouits/test-lto-and-scu
-        tagSource: manual
-        tag: $(Build.BuildNumber)    
-        addChangeLog: false
-    displayName: 'create_github_release'
-
   ##### JOB 1 ######
   - job: "linux_static"
     pool:
-      vmImage: "ubuntu-16.04"
+      vmImage: "ubuntu-latest"
     steps:
     - script: |
         cat /etc/*-release
@@ -40,26 +24,13 @@ jobs:
         sudo ln -svf /usr/bin/gcc-nm-9 /usr/bin/gcc-nm
         sudo ln -svf /usr/bin/gcc-ranlib-9 /usr/bin/gcc-ranlib
         
-        mkdir godot
-        cd godot
         wget https://downloads.tuxfamily.org/godotengine/3.2.2/beta3/godot-3.2.2-beta3.tar.xz
         tar xf godot-3.2.2-beta3.tar.xz --strip-components 1
         sed -i '/configure(/a \    env.Prepend(CCFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CXXFLAGS=["-static"])' platform/x11/detect.py
-        scons p=x11 -j5 tools=yes target=release_debug debug_symbols=no $(LINUX_OPTIONS)
-
-    - task: CopyFiles@2
+        scons p=x11 -j5 tools=no target=release_debug debug_symbols=no $(LINUX_OPTIONS)
+        ls
+    - task: PublishPipelineArtifact@1
       inputs:
-        contents: 'godot/bin/*' 
-        targetFolder: $(Build.ArtifactStagingDirectory)
-    - task: GitHubRelease@0
-      inputs:
-        action: edit
-        gitHubConnection: for-azure-scu
-        repositoryName: santouits/test-lto-and-scu
-        tag: $(Build.BuildNumber)    
-        assets: $(Build.ArtifactStagingDirectory)/**
-        assetUploadMode: replace
-        addChangeLog: false
-    displayName: 'linux_static'
+        targetPath: $(System.DefaultWorkingDirectory)/bin
