@@ -12,10 +12,13 @@ jobs:
       vmImage: "ubuntu-latest"
     steps:
     - script: |
-        apt install docker
+        sudo apt install docker -y
+        docker run -ti ubuntu /bin/bash
+        apt update
+        apt upgrade
+        exit
 
-        fgsfgggg
-      
+
 
   ##### JOB 1 ######
   - job: "linux_static"
@@ -23,6 +26,7 @@ jobs:
       vmImage: "ubuntu-latest"
     steps:
     - script: |
+        gfdfg
         cat /etc/*-release
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
         sudo apt-get -qq update
