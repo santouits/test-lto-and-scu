@@ -29,7 +29,7 @@ jobs:
         sed -i '/configure(/a \    env.Prepend(CCFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CXXFLAGS=["-static"])' platform/x11/detect.py
-        scons p=x11 -j5 tools=no target=release_debug debug_symbols=no $(LINUX_OPTIONS)
+        scons p=x11 -j5 tools=yes target=release_debug debug_symbols=no $(LINUX_OPTIONS) optimize=size
         ls
     - task: PublishPipelineArtifact@1
       inputs:
