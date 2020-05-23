@@ -6,6 +6,13 @@ variables:
   LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes no_editor_splash=yes verbose=yes"
 
 jobs:
+  - job: "windows"
+    pool:
+      vmImage: "windows-latest"
+    steps:
+    - script: |
+        ls
+
   ##### JOB 1 ######
   - job: "linux_static"
     pool:
