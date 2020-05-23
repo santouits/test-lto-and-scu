@@ -2,7 +2,7 @@ trigger:
 - master
 
 variables: 
-  LINUX_INSTALL: "g++-9 git python-pip libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
+  LINUX_INSTALL: "g++-10 git python-pip libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
   LINUX_OPTIONS: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes no_editor_splash=yes verbose=yes"
 
 jobs:
@@ -18,11 +18,11 @@ jobs:
         sudo apt-get -qq install $(LINUX_INSTALL) wget xz-utils -y
         sudo pip install scons
 
-        sudo ln -svf /usr/bin/gcc-9 /usr/bin/gcc
-        sudo ln -svf /usr/bin/g++-9 /usr/bin/g++
-        sudo ln -svf /usr/bin/gcc-ar-9 /usr/bin/gcc-ar
-        sudo ln -svf /usr/bin/gcc-nm-9 /usr/bin/gcc-nm
-        sudo ln -svf /usr/bin/gcc-ranlib-9 /usr/bin/gcc-ranlib
+        sudo ln -svf /usr/bin/gcc-10 /usr/bin/gcc
+        sudo ln -svf /usr/bin/g++-10 /usr/bin/g++
+        sudo ln -svf /usr/bin/gcc-ar-10 /usr/bin/gcc-ar
+        sudo ln -svf /usr/bin/gcc-nm-10 /usr/bin/gcc-nm
+        sudo ln -svf /usr/bin/gcc-ranlib-10 /usr/bin/gcc-ranlib
         
         wget https://downloads.tuxfamily.org/godotengine/3.2.2/beta3/godot-3.2.2-beta3.tar.xz
         tar xf godot-3.2.2-beta3.tar.xz --strip-components 1
