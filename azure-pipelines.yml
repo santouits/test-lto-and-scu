@@ -14,12 +14,18 @@ jobs:
     - script: |
         echo "apt install"
         sudo apt-get update
-        sudo apt-get install docker -y
+        sudo apt-get install docker git -y
+        echo "docker build"
+        docker build --tag mingw .
+        echo "git clone"
+        git clone --depth 1 https://github.com/godotengine/godot
+        cd godot
         echo "docker run"
-        docker run -ti ubuntu /bin/bash
-        apt update
-        apt upgrade
-        exit
+        docker run -v `pwd`:`pwd` -w `pwd` mingw
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: $(System.DefaultWorkingDirectory)/godot/bin
+ 
 
 
 
