@@ -21,7 +21,8 @@ jobs:
         git clone --depth 1 https://github.com/godotengine/godot
         cd godot
         echo "docker run"
-        docker run -v `pwd`:`pwd` -w `pwd` mingw
+        docker run -v `pwd`:`pwd` -w `pwd` mingw scons p=windows target=release_debug -j5
+        strip bin/*
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: $(System.DefaultWorkingDirectory)/godot/bin
