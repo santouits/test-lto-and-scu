@@ -1,0 +1,39 @@
+FROM ubuntu
+
+RUN apt update \
+    && apt install -y --no-install-recommends gnupg \
+    && echo deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu `cat /etc/lsb-release | grep CODENAME | awk -F "=" '{ print $2 }'` main >> /etc/apt/sources.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 60C317803A41BA51845E371A1E9377A2BA9EF27F \
+    && apt update \
+    && apt install -y --no-install-recommends \
+        g++-10 \
+	scons \
+	pkg-config \
+        libgl1-mesa-dri \
+        libgl1-mesa-glx \
+	libx11-6 \
+        libxi6 \
+        libxinerama1 \
+        libxcursor1 \
+        libxrandr2 \
+        libasound2 \
+        libpulse0 \
+	libx11-dev \
+	libfreetype6-dev \
+	libgl1-mesa-dev \
+	libglu1-mesa-dev \
+	libxcursor-dev \
+	libxinerama-dev \
+	libxrandr-dev \
+	libxi-dev \
+        libasound2-dev \
+	libpulse-dev \
+	libgl1-mesa-dev \
+    && ln -svf /usr/bin/gcc-10 /usr/bin/gcc \
+    && ln -svf /usr/bin/g++-10 /usr/bin/g++ \
+    && ln -svf /usr/bin/gcc-ar-10 /usr/bin/gcc-ar \
+    && ln -svf /usr/bin/gcc-nm-10 /usr/bin/gcc-nm \
+    && ln -svf /usr/bin/gcc-ranlib-10 /usr/bin/gcc-ranlib
+
+CMD echo ""
+
