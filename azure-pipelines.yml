@@ -49,6 +49,7 @@ jobs:
       vmImage: "ubuntu-latest"
     steps:
     - script: |
+        exit -1    
         sudo apt-get update
         sudo apt-get install docker git -y
         docker build -f Dockerfile.linux-gcc --tag linux-gcc .
@@ -66,6 +67,7 @@ jobs:
       vmImage: "ubuntu-latest"
     steps:
     - script: |
+        exit -1    
         sudo apt-get update
         sudo apt-get install docker git -y
         docker build -f Dockerfile.linux-gcc --tag linux-gcc .

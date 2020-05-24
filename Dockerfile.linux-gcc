@@ -35,5 +35,7 @@ RUN apt update \
     && ln -svf /usr/bin/gcc-nm-10 /usr/bin/gcc-nm \
     && ln -svf /usr/bin/gcc-ranlib-10 /usr/bin/gcc-ranlib
 
+ENV PATH="/usr/lib/gcc/x86_64-linux-gnu/10/:${PATH}"
+
 CMD echo ""
 
