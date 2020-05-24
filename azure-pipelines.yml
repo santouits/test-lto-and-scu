@@ -2,7 +2,7 @@ trigger:
 - master
 
 variables: 
-  LINUX_COMMON: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes no_editor_splash=yes verbose=yes optimize=size"
+  LINUX_COMMON: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes no_editor_splash=yes verbose=yes"
 
 jobs:
 
@@ -11,18 +11,22 @@ jobs:
       vmImage: "ubuntu-latest"
     steps:
     - script: |
+        exit -1
         sudo apt-get update
         sudo apt-get install docker git -y
         docker build -f Dockerfile.mingw --tag mingw .
         git clone --depth 1 https://github.com/godotengine/godot
         cd godot
-        docker run -v `pwd`:`pwd` -w `pwd` mingw scons p=windows target=release_debug -j5
+        docker run -v `pwd`:`pwd` -w `pwd` mingw scons p=windows target=release_debug -j5 verbose=yes
+        ls -lh bin
+        cd bin
+        strip *
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: $(System.DefaultWorkingDirectory)/godot/bin
  
 
-  - job: "linux_tools_gcc_tools"
+  - job: "linux_tools_gcc_tools_Os"
     pool:
       vmImage: "ubuntu-latest"
     steps:
@@ -35,16 +39,52 @@ jobs:
         sed -i '/configure(/a \    env.Prepend(CCFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CXXFLAGS=["-static"])' platform/x11/detect.py
-        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=yes target=release_debug $LINUX_COMMON -j5
+        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=yes target=release_debug $LINUX_COMMON optimize=size -j5
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: $(System.DefaultWorkingDirectory)/godot/bin
 
+  - job: "linux_tools_gcc_tools_O2"
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+    - script: |
+        sudo apt-get update
+        sudo apt-get install docker git -y
+        docker build -f Dockerfile.linux-gcc --tag linux-gcc .
+        git clone --depth 1 https://github.com/godotengine/godot --branch 3.2
+        cd godot
+        sed -i '/configure(/a \    env.Prepend(CCFLAGS=["-static"])' platform/x11/detect.py
+        sed -i '/configure(/a \    env.Prepend(CFLAGS=["-static"])' platform/x11/detect.py
+        sed -i '/configure(/a \    env.Prepend(CXXFLAGS=["-static"])' platform/x11/detect.py
+        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=yes target=release_debug $LINUX_COMMON optimize=speed -j5
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: $(System.DefaultWorkingDirectory)/godot/bin
+  - job: "linux_tools_gcc_tools_O3"
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+    - script: |
+        sudo apt-get update
+        sudo apt-get install docker git -y
+        docker build -f Dockerfile.linux-gcc --tag linux-gcc .
+        git clone --depth 1 https://github.com/godotengine/godot --branch 3.2
+        cd godot
+        sed -i '/configure(/a \    env.Prepend(CCFLAGS=["-static"])' platform/x11/detect.py
+        sed -i '/configure(/a \    env.Prepend(CFLAGS=["-static"])' platform/x11/detect.py
+        sed -i '/configure(/a \    env.Prepend(CXXFLAGS=["-static"])' platform/x11/detect.py
+        sed -i -e 's/O2/O3/g' platform/x11/detect.py
+        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=yes target=release_debug $LINUX_COMMON optimize=speed -j5
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: $(System.DefaultWorkingDirectory)/godot/bin
   - job: "linux_gcc_export"
     pool:
       vmImage: "ubuntu-latest"
     steps:
     - script: |
+        exit -1
         sudo apt-get update
         sudo apt-get install docker git -y
         docker build -f Dockerfile.linux-gcc --tag linux-gcc .
