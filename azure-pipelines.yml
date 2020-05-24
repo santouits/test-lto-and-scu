@@ -2,7 +2,7 @@ trigger:
 - master
 
 variables: 
-  LINUX_COMMON: "builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes no_editor_splash=yes verbose=yes"
+  LINUX_COMMON: "-j3 use_lto=yes builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes no_editor_splash=yes verbose=yes"
 
 jobs:
 
@@ -39,7 +39,7 @@ jobs:
         sed -i '/configure(/a \    env.Prepend(CCFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CXXFLAGS=["-static"])' platform/x11/detect.py
-        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=yes target=release_debug $LINUX_COMMON optimize=size -j5
+        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=yes target=release_debug $LINUX_COMMON optimize=size
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: $(System.DefaultWorkingDirectory)/godot/bin
@@ -57,7 +57,7 @@ jobs:
         sed -i '/configure(/a \    env.Prepend(CCFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CXXFLAGS=["-static"])' platform/x11/detect.py
-        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=yes target=release_debug $LINUX_COMMON optimize=speed -j5
+        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=yes target=release_debug $LINUX_COMMON optimize=speed
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: $(System.DefaultWorkingDirectory)/godot/bin
@@ -75,7 +75,7 @@ jobs:
         sed -i '/configure(/a \    env.Prepend(CFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CXXFLAGS=["-static"])' platform/x11/detect.py
         sed -i -e 's/O2/O3/g' platform/x11/detect.py
-        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=yes target=release_debug $LINUX_COMMON optimize=speed -j5
+        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=yes target=release_debug $LINUX_COMMON optimize=speed
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: $(System.DefaultWorkingDirectory)/godot/bin
@@ -93,7 +93,7 @@ jobs:
         sed -i '/configure(/a \    env.Prepend(CCFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CFLAGS=["-static"])' platform/x11/detect.py
         sed -i '/configure(/a \    env.Prepend(CXXFLAGS=["-static"])' platform/x11/detect.py
-        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=no target=release_debug $LINUX_COMMON -j5
+        docker run -v `pwd`:`pwd` -w `pwd` linux-gcc scons p=x11 tools=no target=release_debug $LINUX_COMMON
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: $(System.DefaultWorkingDirectory)/godot/bin
