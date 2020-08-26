@@ -1,0 +1,33 @@
+trigger:
+- master
+
+variables: 
+  LINUX_COMMON: "-j3 builtin_openssl=yes builtin_zlib=yes builtin_libpng=yes no_editor_splash=yes verbose=yes"
+  INSTALL: "python3-pip build-essential scons pkg-config libgl1-mesa-dri libgl1-mesa-glx libx11-6 libxi6 libxinerama1 libxcursor1 libxrandr2 libasound2 libpulse0 libx11-dev libfreetype6-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev libxrandr-dev libxi-dev libasound2-dev libpulse-dev libgl1-mesa-dev"
+
+jobs:
+
+
+  - job: "linux_tools_pch"
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+    - script: |
+        sudo apt-get update
+        sudo apt-get install $INSTALL -y
+        sudo pip3 install scons
+        git clone --depth 1 https://github.com/santouits/godot --branch pch
+        cd godot
+        scons p=x11 tools=yes target=release_debug $LINUX_COMMON
+
+  - job: "no_linux_tools_pch"
+    pool:
+      vmImage: "ubuntu-latest"
+    steps:
+    - script: |
+        sudo apt-get update
+        sudo apt-get install $INSTALL -y
+        sudo pip3 install scons
+        git clone --depth 1 https://github.com/godotengine/godot
+        cd godot
+        scons p=x11 tools=yes target=release_debug $LINUX_COMMON

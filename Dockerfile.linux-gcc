@@ -7,6 +7,7 @@ RUN apt update \
     && apt update \
     && apt install -y --no-install-recommends \
         g++-10 \
+	make \
 	scons \
 	pkg-config \
         libgl1-mesa-dri \
